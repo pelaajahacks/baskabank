@@ -1,0 +1,51 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <script src="script.js"></script>
+    <script
+  src="https://code.jquery.com/jquery-3.6.0.js"
+  integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk="
+  crossorigin="anonymous"></script>
+    <title>Welcome!</title>
+</head>
+<body onload="update_OnLoad()">
+    <div class="main">
+        <div class=container>
+            <div class="login">
+                <div class="main-login-title">
+                    <h1 class=text>Hey, Aki Ekroos!</h1>
+                </div>
+                
+                <div class="main-login-subtitle">
+                    <h1 class="text">You currently have <span id="rahet_span"></span>€</h1>
+                </div>
+
+                <div class="login-area">
+                    <div class="inputs">
+                        <input type="submit" name="" value="Käytä rahaa cubase pro lisens" id="submit" onclick="ripRahat(500, 0)">
+                        <input type="submit" name="" value="Käytä rahaa chromebook" id="submit" onclick="ripRahat(72, 1)">
+                        <input type="submit" name="" value="Käytä rahaa tuoleihin" id="submit" onclick="ripRahat(30, 2)">
+                        <input type="submit" name="" value="Käytä rahaa pöytiin" id="submit" onclick="ripRahat(69, 3)">
+                        <input type="submit" name="" value="Käytä rahaa maskeihin 50pack" id="submit" onclick="ripRahat(5, 4)">
+                        <input type="submit" name="" value="Pyydä hallitukselta rahaa" id="submit" onclick="ripRahat(1000, 5)">
+                    </div>
+                </div>
+                <div class="kouluitems">
+                    <h1 class="text">Hyvä Aki Ekroos, teillä on hiukan tavaraa</h1>
+                    <h1 class="text"><span id=cubase_span></span> Cubase Pro</h1>
+                    <h1 class="text"><span id=chrome_span></span> Chromebook</h1>
+                    <h1 class="text"><span id=tuoli_span></span> Tuolia</h1>
+                    <h1 class="text"><span id=pöytä_span></span> Pöytää</h1>
+                    <h1 class="text"><span id=maski_span></span> Maskiboxia</h1>
+                </div>
+                
+            </div>
+                
+        </div>
+
+    </div>
+</body>
+</html>
