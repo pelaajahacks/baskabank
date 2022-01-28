@@ -45,6 +45,7 @@ function checkISP() {
         } else {
             console.log("Pro ISP");
         }
+    return 0;
     });
 }
 
