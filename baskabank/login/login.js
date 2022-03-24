@@ -1,3 +1,35 @@
-var _0xe354=["\x76\x61\x6C\x75\x65","\x75\x73\x65\x72\x6E\x61\x6D\x65","\x67\x65\x74\x45\x6C\x65\x6D\x65\x6E\x74\x42\x79\x49\x64","\x70\x61\x73\x73\x77\x6F\x72\x64","\x61\x6B\x69","\x63\x6F\x6F\x6B\x69\x65","\x6C\x6F\x67\x67\x65\x64\x5F\x69\x6E\x3D\x74\x72\x75\x65","\x2F\x62\x61\x73\x6B\x61\x62\x61\x6E\x6B\x2F\x6C\x6F\x67\x67\x65\x64\x5F\x69\x6E","\x72\x65\x70\x6C\x61\x63\x65","\x6C\x6F\x63\x61\x74\x69\x6F\x6E","\x62\x61\x64\x2C\x20\x64\x6F\x73\x65\x6E\x74\x20\x65\x76\x65\x6E\x20\x6B\x6E\x6F\x77\x20\x70\x61\x73\x73\x77\x6F\x72\x64\x2F\x75\x73\x65\x72\x6E\x61\x6D\x65","\x3D","\x3B\x20","\x73\x70\x6C\x69\x74","\x69\x6E\x64\x65\x78\x4F\x66","\x6C\x65\x6E\x67\x74\x68","\x73\x75\x62\x73\x74\x72\x69\x6E\x67","\x66\x6F\x72\x45\x61\x63\x68","\x6C\x6F\x67\x67\x65\x64\x5F\x69\x6E"];function validate(){var _0x8e73x2=document[_0xe354[2]](_0xe354[1])[_0xe354[0]];var _0x8e73x3=document[_0xe354[2]](_0xe354[3])[_0xe354[0]];if(_0x8e73x2== _0xe354[4]){document[_0xe354[5]]= _0xe354[6];window[_0xe354[9]][_0xe354[8]](_0xe354[7]);return false}else {alert(_0xe354[10])}}function getCookie(_0x8e73x5){const _0x8e73x6=_0x8e73x5+ _0xe354[11];const _0x8e73x7=decodeURIComponent(document[_0xe354[5]]);const _0x8e73x8=_0x8e73x7[_0xe354[13]](_0xe354[12]);let _0x8e73x9;_0x8e73x8[_0xe354[17]]((_0x8e73xa)=>{if(_0x8e73xa[_0xe354[14]](_0x8e73x6)=== 0){_0x8e73x9= _0x8e73xa[_0xe354[16]](_0x8e73x6[_0xe354[15]])}});return _0x8e73x9}function check_if_logged_in_already(){if(getCookie(_0xe354[18])){window[_0xe354[9]][_0xe354[8]](_0xe354[7])}}check_if_logged_in_already()
+function validate() {
+    var username=document.getElementById("username").value;
+    var password=document.getElementById("password").value;
 
-//https://www.javascriptobfuscator.com/Javascript-Obfuscator.aspx
+    if(username=="aki") {
+        document.cookie = "logged_in=true";
+        window.location.replace("/baskabank/logged_in");   
+        return false;
+
+    }
+
+    else {
+        alert("bad, dosent even know password/username")
+    }
+
+}
+
+function getCookie(cName) {
+    const name = cName + "=";
+    const cDecoded = decodeURIComponent(document.cookie); //to be careful
+    const cArr = cDecoded.split('; ');
+    let res;
+    cArr.forEach(val => {
+      if (val.indexOf(name) === 0) res = val.substring(name.length);
+    })
+    return res
+  }
+
+function check_if_logged_in_already() {
+    if(getCookie("logged_in")) {
+        window.location.replace("/baskabank/logged_in");   
+    }
+}
+
+check_if_logged_in_already()
