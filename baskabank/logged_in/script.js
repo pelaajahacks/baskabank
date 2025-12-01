@@ -1,167 +1,193 @@
+const purchaseOptions = [
+    { key: "cubase_lisens", name: "Cubase Pro License", price: 500, emoji: "🎚️", description: "DAW upgrade for the studio." },
+    { key: "Chromebook", name: "Chromebook", price: 72, emoji: "💻", description: "Extra device for quick browsing." },
+    { key: "Tuoli_kpls", name: "Ergonomic chair", price: 30, emoji: "🪑", description: "Comfort for long sessions." },
+    { key: "Pöytä_kpls", name: "Adjustable desk", price: 69, emoji: "🧰", description: "Room for all the gadgets." },
+    { key: "Maski", name: "Mask pack (50)", price: 5, emoji: "😷", description: "Stay safe, stay productive." },
+    { key: "studio_monitors", name: "Studio monitors", price: 350, emoji: "🔊", description: "Crisp reference sound." },
+    { key: "ambient_led", name: "Ambient LED strips", price: 22, emoji: "🌈", description: "Mood lighting upgrade." },
+    { key: "coffee_tokens", name: "Coffee tokens", price: 12, emoji: "☕", description: "Energy for the night shift." },
+    { key: "green_plants", name: "Office plants", price: 18, emoji: "🌿", description: "Fresh air and good vibes." },
+    { key: "hallitus_grant", name: "Ask government for cash", price: -1000, emoji: "💸", description: "Magically adds funds." }
+];
+
+const defaultBalance = 43532;
+let rahet = 0;
+const inventoryState = {};
+
 function getCookie(cName) {
     const name = cName + "=";
-    const cDecoded = decodeURIComponent(document.cookie); //to be careful
-    const cArr = cDecoded.split('; ');
+    const cDecoded = decodeURIComponent(document.cookie);
+    const cArr = cDecoded.split("; ");
     let res;
-    cArr.forEach(val => {
-      if (val.indexOf(name) === 0) res = val.substring(name.length);
-    })
-    return res
-  }
+    cArr.forEach((val) => {
+        if (val.indexOf(name) === 0) res = val.substring(name.length);
+    });
+    return res;
+}
 
+function setCookie(key, value) {
+    document.cookie = `${key}=${value}; path=/`;
+}
+
+function storageGet(key, fallback = 0) {
+    const rawLocal = localStorage.getItem(key);
+    const rawCookie = getCookie(key);
+    const raw = rawLocal ?? rawCookie;
+    if (raw === undefined || raw === null || raw === "") return fallback;
+    const parsed = Number(raw);
+    return Number.isFinite(parsed) ? parsed : fallback;
+}
+
+function storageSet(key, value) {
+    localStorage.setItem(key, value);
+    setCookie(key, value);
+}
 
 function check_if_safe() {
     if (!getCookie("logged_in")) {
-        window.location.replace("/login");   
+        window.location.replace("/login");
     }
 }
-function getCookie(cName) {
-    const name = cName + "=";
-    const cDecoded = decodeURIComponent(document.cookie); //to be careful
-    const cArr = cDecoded.split('; ');
-    let res;
-    cArr.forEach(val => {
-      if (val.indexOf(name) === 0) res = val.substring(name.length);
-    })
-    return res;
-  }
-
-if(!getCookie("money")) {
-    var rahet = 43532;
-}
-else {
-    var rahet = getCookie("money");
-}
-
-console.log(!getCookie("money"));
 
 function checkISP() {
-	let apiKey = '9313f7b66cab48f09c9b60d54fac469a';
-    $.getJSON('https://api.bigdatacloud.net/data/ip-geolocation-with-confidence?key=' + apiKey, function(data) {
+    const statusPill = document.querySelector(".pill.success");
+    let apiKey = "9313f7b66cab48f09c9b60d54fac469a";
+    $.getJSON(`https://api.bigdatacloud.net/data/ip-geolocation-with-confidence?key=${apiKey}`, function (data) {
         var a = data.network.organisation.toLowerCase();
         if (a.includes("espoo")) {
             document.location = "/baskabank/error";
-            document.cookie = "logged_in=false"
+            document.cookie = "logged_in=false";
         } else {
-            console.log("Pro ISP");
+            statusPill.textContent = "ISP looks good";
         }
+    }).fail(function () {
+        statusPill.textContent = "ISP check skipped (offline)";
+        statusPill.classList.remove("success");
     });
 }
 
+function initializeState() {
+    rahet = storageGet("money", defaultBalance);
+    if (!getCookie("money") && !localStorage.getItem("money")) {
+        storageSet("money", rahet);
+    }
+
+    purchaseOptions.forEach((item) => {
+        inventoryState[item.key] = storageGet(item.key, 0);
+        storageSet(item.key, inventoryState[item.key]);
+    });
+}
+
+function renderShop() {
+    const shopGrid = document.getElementById("shop_grid");
+    shopGrid.innerHTML = "";
+
+    purchaseOptions.forEach((item) => {
+        const card = document.createElement("div");
+        card.className = "shop-card";
+
+        const header = document.createElement("div");
+        header.className = "shop-header";
+        const title = document.createElement("h4");
+        title.className = "shop-title";
+        title.textContent = item.name;
+        const emoji = document.createElement("span");
+        emoji.className = "shop-emoji";
+        emoji.textContent = item.emoji;
+        header.appendChild(title);
+        header.appendChild(emoji);
+
+        const meta = document.createElement("p");
+        meta.className = "shop-meta";
+        meta.textContent = item.description;
+
+        const price = document.createElement("p");
+        price.className = "price";
+        price.textContent = item.price < 0 ? `+${Math.abs(item.price)} €` : `${item.price} €`;
+
+        const button = document.createElement("button");
+        button.className = "action-btn";
+        button.textContent = item.price < 0 ? "Boost funds" : "Add to cart";
+        button.onclick = () => ripRahat(item);
+
+        card.appendChild(header);
+        card.appendChild(meta);
+        card.appendChild(price);
+        card.appendChild(button);
+        shopGrid.appendChild(card);
+    });
+}
+
+function renderInventory() {
+    const inventoryContainer = document.getElementById("inventory");
+    inventoryContainer.innerHTML = "";
+    let total = 0;
+
+    purchaseOptions.forEach((item) => {
+        const amount = inventoryState[item.key] || 0;
+        total += amount;
+
+        const block = document.createElement("div");
+        block.className = "inventory-item";
+
+        const label = document.createElement("p");
+        label.className = "inventory-label";
+        label.textContent = item.name;
+
+        const qty = document.createElement("p");
+        qty.className = "inventory-amount";
+        qty.textContent = `${amount} ${item.emoji}`;
+
+        block.appendChild(label);
+        block.appendChild(qty);
+        inventoryContainer.appendChild(block);
+    });
+
+    const totalNode = document.getElementById("total_items");
+    totalNode.textContent = `${total} items collected`;
+}
 
 function update_OnLoad() {
-    checkISP()
-    var raha_span = document.getElementById("rahet_span");
-    raha_span.innerHTML = rahet;
-    console.log(raha_span, rahet);
-    document.cookie = "money=" + rahet;
-
-    document.cookie = "cubase_lisens=" + cubase_lisens;
-    document.cookie = "Chromebook=" + Chromebook;
-    document.cookie = "Tuoli_kpls=" + Tuoli_kpls;
-    document.cookie = "Pöytä_kpls=" + Pöytä_kpls;
-    document.cookie = "Maski=" + Maski;
-
-    var cubase_span = document.getElementById("cubase_span")
-    var chrome_span = document.getElementById("chrome_span")
-    var tuoli_span = document.getElementById("tuoli_span")
-    var pöytä_span = document.getElementById("pöytä_span")
-    var maski_span = document.getElementById("maski_span")
-
-    cubase_span.innerHTML = cubase_lisens
-    chrome_span.innerHTML = Chromebook
-    tuoli_span.innerHTML = Tuoli_kpls
-    pöytä_span.innerHTML = Pöytä_kpls
-    maski_span.innerHTML = Maski
+    check_if_safe();
+    checkISP();
+    initializeState();
+    renderShop();
+    renderInventory();
+    updateBalanceLabel();
+    updateLastLogin();
 }
 
-if(!getCookie("cubase_lisens")) {
-    var cubase_lisens = 0;
-    document.cookie = "cubase_lisens=0";
-}
-if(getCookie("cubase_lisens")) {
-    var cubase_lisens = getCookie("cubase_lisens");
+function updateBalanceLabel() {
+    const raha_span = document.getElementById("rahet_span");
+    raha_span.textContent = rahet;
+    storageSet("money", rahet);
 }
 
-if(!getCookie("Tuoli_kpls")) {
-    var Tuoli_kpls = 0;
-    document.cookie = "Tuoli_kpls=0";
-}
-if(getCookie("Tuoli_kpls")) {
-    var Tuoli_kpls = getCookie("Tuoli_kpls");
-}
-
-if(!getCookie("Pöytä_kpls")) {
-    var Pöytä_kpls = 0;
-    document.cookie = "Pöytä_kpls=0";
-}
-if(getCookie("Pöytä_kpls")) {
-    var Pöytä_kpls = getCookie("Pöytä_kpls");
-}
-
-if(!getCookie("Chromebook")) {
-    var Chromebook = 0;
-    document.cookie = "Chromebook=0";
-}
-if(getCookie("Chromebook")) {
-    var Chromebook = getCookie("Chromebook");
-}
-
-if(!getCookie("Maski")) {
-    var Maski = 0
-    document.cookie = "Maski=0";
-}
-if(getCookie("Maski")) {
-    var Maski = getCookie("Maski");
-}
-
-function ripRahat(moneyAmount, item) {
-    var raha_span = document.getElementById("rahet_span");
-    if(item !== 5) {
-        rahet -= moneyAmount;
+function updateLastLogin() {
+    const label = document.getElementById("last_login_label");
+    const last = getCookie("last_login");
+    if (last) {
+        label.textContent = `Last login: ${new Date(last).toLocaleString()}`;
+    } else {
+        label.textContent = "First visit recorded";
     }
-    
-    raha_span.innerHTML = rahet;
-    document.cookie = "money=" + rahet;
+}
 
-    if(item == 0) {
-        cubase_lisens++
-    }
-    if(item == 1) {
-        Chromebook++
-    }
-    if(item == 2) {
-        Tuoli_kpls++
-    }
-    if(item == 3) {
-        Pöytä_kpls++
-    }
-    if(item == 4) {
-        Maski++
-    }
-    if(item == 5) {
-        var x = Number(rahet) + Number(moneyAmount)
-        rahet = x
-        console.log(x)
+function ripRahat(item) {
+    if (item.price >= 0) {
+        rahet -= item.price;
+    } else {
+        rahet += Math.abs(item.price);
     }
 
-    document.cookie = "cubase_lisens=" + cubase_lisens;
-    document.cookie = "Chromebook=" + Chromebook;
-    document.cookie = "Tuoli_kpls=" + Tuoli_kpls;
-    document.cookie = "Pöytä_kpls=" + Pöytä_kpls;
-    document.cookie = "Maski=" + Maski;
-
-    var cubase_span = document.getElementById("cubase_span")
-    var chrome_span = document.getElementById("chrome_span")
-    var tuoli_span = document.getElementById("tuoli_span")
-    var pöytä_span = document.getElementById("pöytä_span")
-    var maski_span = document.getElementById("maski_span")
-
-    cubase_span.innerHTML = cubase_lisens
-    chrome_span.innerHTML = Chromebook
-    tuoli_span.innerHTML = Tuoli_kpls
-    pöytä_span.innerHTML = Pöytä_kpls
-    maski_span.innerHTML = Maski
+    inventoryState[item.key] = (inventoryState[item.key] || 0) + 1;
+    storageSet(item.key, inventoryState[item.key]);
+    updateBalanceLabel();
+    renderInventory();
 }
 
-
+function logout() {
+    document.cookie = "logged_in=false; path=/";
+    window.location.replace("/login");
+}
