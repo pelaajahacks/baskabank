@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -5,37 +6,43 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Baskabank | Login</title>
     <link rel="stylesheet" href="style.css">
-    <script src="login.js"></script>
-    
+    <script defer src="login.js"></script>
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
-    <div class="main">
-        <div class=container>
-            <div class="login">
-                <div class="main-login-title">
-                    <h1 class=text>Welcome!</h1>
-                </div>
-                
-                <div class="main-login-subtitle">
-                    <h1 class="text">Please login!</h1>
+    <div class="background-glow"></div>
+    <div class="background-grid"></div>
+    <main class="main">
+        <section class="card">
+            <header class="main-login-title">
+                <p class="eyebrow">Baskabank Intranet</p>
+                <h1 class="text">Welcome back, hero</h1>
+                <p class="subtitle">Log in to keep funding your favourite gear.</p>
+            </header>
+
+            <form class="login-area" onsubmit="validate(event)">
+                <label class="input-label" for="username">Username</label>
+                <input type="text" placeholder="Username" id="username" autocomplete="username" required>
+
+                <label class="input-label" for="password">Secret passphrase</label>
+                <div class="password-row">
+                    <input type="password" placeholder="●●●●●●●●" id="password" autocomplete="current-password" required>
+                    <button type="button" class="ghost" onclick="togglePassword()" aria-label="Toggle password visibility">👁</button>
                 </div>
 
-                <div class="login-area">
-                    <div class="inputs">
-                        <input type="text" name="" placeholder="Username" id="username">
-                        <input type="password" name="" placeholder="Password" id="password">
-                        <input type="submit" name="" value="Login" id="submit" onclick="validate()">
-                    </div>
-                </div>
-                
-            </div>
-                
-        </div>
+                <p class="hint">Tip: favourite vegetable plus a lucky number.</p>
+                <div class="error" id="error" role="alert" aria-live="polite"></div>
 
-    </div>
-    
+                <button type="submit" id="submit">Enter vault</button>
+            </form>
+
+            <footer class="footnote">
+                <p class="text">Client-side only. Keep your browser safe!</p>
+            </footer>
+        </section>
+    </main>
 </body>
 </html>

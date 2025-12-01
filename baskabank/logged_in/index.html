@@ -1,52 +1,59 @@
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style.css">
-    <script src="script.js"></script>
-	<script
-    src="https://code.jquery.com/jquery-3.2.1.min.js"
-    integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
-    crossorigin="anonymous"></script>
-
+    <script defer src="https://code.jquery.com/jquery-3.2.1.min.js"
+        integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+    <script defer src="script.js"></script>
     <title>Welcome!</title>
 </head>
 <body onload="update_OnLoad()">
-    <div class="main">
-        <div class=container>
-            <div class="login">
-                <div class="main-login-title">
-                    <h1 class=text>Hey, Zwiebel Herra!</h1>
-                </div>
-                
-                <div class="main-login-subtitle">
-                    <h1 class="text">You currently have <span id="rahet_span"></span>€</h1>
-                </div>
-
-                <div class="login-area">
-                    <div class="inputs">
-                        <input type="submit" name="" value="Käytä rahaa cubase pro lisens" id="submit" onclick="ripRahat(500, 0)">
-                        <input type="submit" name="" value="Käytä rahaa chromebook" id="submit" onclick="ripRahat(72, 1)">
-                        <input type="submit" name="" value="Käytä rahaa tuoleihin" id="submit" onclick="ripRahat(30, 2)">
-                        <input type="submit" name="" value="Käytä rahaa pöytiin" id="submit" onclick="ripRahat(69, 3)">
-                        <input type="submit" name="" value="Käytä rahaa maskeihin 50pack" id="submit" onclick="ripRahat(5, 4)">
-                        <input type="submit" name="" value="Pyydä hallitukselta rahaa" id="submit" onclick="ripRahat(1000, 5)">
-                    </div>
-                </div>
-                <div class="kouluitems">
-                    <h1 class="text">Hyvä Zwiebel Herra, teillä on hiukan tavaraa</h1>
-                    <h1 class="text"><span id=cubase_span></span> Cubase Pro</h1>
-                    <h1 class="text"><span id=chrome_span></span> Chromebook</h1>
-                    <h1 class="text"><span id=tuoli_span></span> Tuolia</h1>
-                    <h1 class="text"><span id=pöytä_span></span> Pöytää</h1>
-                    <h1 class="text"><span id=maski_span></span> Maskiboxia</h1>
-                </div>
-                
+    <div class="background-glow"></div>
+    <div class="background-grid"></div>
+    <main class="page">
+        <header class="topbar">
+            <div>
+                <p class="eyebrow">Baskabank Vault</p>
+                <h1 class="hero">Hei, Zwiebel Herra!</h1>
+                <p class="muted">Spend smart, brag later.</p>
             </div>
-                
-        </div>
+            <button class="ghost" onclick="logout()">Log out</button>
+        </header>
 
-    </div>
+        <section class="balance-card">
+            <div>
+                <p class="eyebrow">Current balance</p>
+                <h2 class="balance"><span id="rahet_span"></span> €</h2>
+                <p class="muted">Updated instantly for every purchase.</p>
+            </div>
+            <div class="pill" id="last_login_label"></div>
+        </section>
+
+        <section class="panel">
+            <div class="panel-header">
+                <div>
+                    <p class="eyebrow">Shopping list</p>
+                    <h3 class="panel-title">Pick your upgrades</h3>
+                    <p class="muted">Everything is client-side, so go wild.</p>
+                </div>
+                <div class="pill success">ISP check in progress</div>
+            </div>
+            <div class="shop-grid" id="shop_grid"></div>
+        </section>
+
+        <section class="panel">
+            <div class="panel-header">
+                <div>
+                    <p class="eyebrow">Inventory</p>
+                    <h3 class="panel-title">What you've hoarded</h3>
+                </div>
+                <div class="pill" id="total_items"></div>
+            </div>
+            <div class="inventory" id="inventory"></div>
+        </section>
+    </main>
 </body>
 </html>
